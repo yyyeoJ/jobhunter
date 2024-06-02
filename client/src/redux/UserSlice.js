@@ -4,8 +4,9 @@ import axios from "axios"
 export const loginUser = createAsyncThunk(
     "user/loginUser",
     async(userCredentials)=>{
-        const request = await axios.post("http://localhost:3030/users/authentication",userCredentials)
-        const response = await request.data.data
+        console.log(userCredentials)
+        const request = await axios.post("http://localhost:3030/authentication",userCredentials)
+        const response = await request.data
         localStorage.setItem("user",JSON.stringify(response))
         return response
     }
@@ -27,7 +28,6 @@ const userSlice = createSlice({
             state.error = null
         })
         .addCase(loginUser.fulfilled,(state,action)=>{
-            console.log(action)
             state.loading=false
             state.error=false
             state.user=action.payload

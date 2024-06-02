@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 function getUser(){
     let user = localStorage.getItem("user")
-    if(user){
+    if(user != "undefined"){
         user = JSON.parse(user)
     }
     else{

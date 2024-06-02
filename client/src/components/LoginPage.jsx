@@ -16,7 +16,11 @@ const LoginPage = () => {
 
     const handleLoginEvent=(e)=>{
         e.preventDefault()
-        let userCredentials = {"email":email,"password":password,strategy:"local"}
+        let userCredentials = {
+            "email": "user1@jobhunter.hu",
+            "password": "user1",
+            "strategy": "local"
+        }
         dispatch(loginUser(userCredentials)).then((result)=>{
             if(result.payload){
                 setEmail("")
