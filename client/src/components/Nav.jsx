@@ -22,7 +22,7 @@ const Nav = () => {
 
 
     return (
-        <Navbar onMenuOpenChange={setIsMenuOpen}>
+        <Navbar shouldHideOnScroll isBordered isBlurred={false} onMenuOpenChange={setIsMenuOpen}>
         <NavbarContent>
         <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
