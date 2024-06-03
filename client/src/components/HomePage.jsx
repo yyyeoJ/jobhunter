@@ -16,17 +16,14 @@ function getUser(){
 const HomePage = () => {
 
 
-    const [user,setUser] = useState(getUser())
-    console.log(user)
-
-    const handleLogout = ()=>{
-        localStorage.removeItem("user")
-        setUser(null)
-    }
-
-
     return (
-    <div>HomePage</div>
+    <>
+        <div>Homepage</div>
+        
+        
+        
+    </>
+    
     )
 }
 

@@ -1,25 +1,26 @@
-import React from 'react'
+import React, { useEffect,useState } from 'react'
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button} from "@nextui-org/react";
 import logo from "../assets/logo.png"
+import {useDispatch, useSelector} from "react-redux"
+import { logoutUser } from '../redux/UserSlice';
+
 
 const Nav = () => {
 
+    
+    const handleLogout = ()=>{
+        localStorage.removeItem("user")
+        dispatch(logoutUser())
+        
+    }
+
+    const user = useSelector((state)=>state.user)
+
+    console.log(user.user)
+
+
+    const dispatch = useDispatch()
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-    const menuItems = [
-        "Profile",
-        "Dashboard",
-        "Activity",
-        "Analytics",
-        "System",
-        "Deployments",
-        "My Settings",
-        "Team Settings",
-        "Help & Feedback",
-        "Log Out",
-    ];
-
-
 
     return (
         <Navbar shouldHideOnScroll isBordered isBlurred={false} onMenuOpenChange={setIsMenuOpen}>
@@ -35,49 +36,53 @@ const Nav = () => {
             </Link>
         </NavbarBrand>
         </NavbarContent>
-
+        
+    
+        {user.user &&
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
             <Link color="foreground" href="#">
-            Features
+            My profile
             </Link>
         </NavbarItem>
-        <NavbarItem isActive>
+        {user.user.user.role === "company" && 
+        <NavbarItem>
             <Link href="#" aria-current="page">
-            Customers
+            Post job posting
             </Link>
         </NavbarItem>
-        <NavbarItem>
-            <Link color="foreground" href="#">
-            Integrations
-            </Link>
-        </NavbarItem>
+        }
+        <NavbarItem className="sm:flex">
+                <Button onClick={()=>handleLogout()} color="danger"  variant="flat">
+                Logout
+                </Button>
+            </NavbarItem>
         </NavbarContent>
+        }
+        
+
+        {!user.user &&
         <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-            <Link href="/login">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-            <Button as={Link} color="primary" href="/register" variant="flat">
-            Sign Up
-            </Button>
-        </NavbarItem>
+            <NavbarItem className="hidden sm:flex">
+                <Link href="/login">Login</Link>
+            </NavbarItem>
+            <NavbarItem className="sm:flex">
+                <Button as={Link} color="primary" href="/register" variant="flat">
+                Sign Up
+                </Button>
+            </NavbarItem>
         </NavbarContent>
+        }
+        
+        
+        
         <NavbarMenu>
-        {menuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-                color={
-                index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
-                }
-                className="w-full"
-                href="#"
-                size="lg"
-            >
-                {item}
-            </Link>
+            <NavbarMenuItem>
+                <Link size='lg' href="/login">Login</Link>
             </NavbarMenuItem>
-        ))}
+            <NavbarMenuItem>
+                <Link size='lg' color='danger' href="/login">Logout</Link>
+            </NavbarMenuItem>
         </NavbarMenu>
     </Navbar>
     )

@@ -17,8 +17,8 @@ const LoginPage = () => {
     const handleLoginEvent=(e)=>{
         e.preventDefault()
         let userCredentials = {
-            "email": "user1@jobhunter.hu",
-            "password": "user1",
+            "email": email,
+            "password": password,
             "strategy": "local"
         }
         dispatch(loginUser(userCredentials)).then((result)=>{
@@ -32,7 +32,7 @@ const LoginPage = () => {
 
 
 return (
-    <div className='flex justify-center mt-28'>
+    <div className='flex justify-center sm:mt-28'>
             <Card className="w-[400px]">
                 <CardHeader className="flex gap-3">
                     <div className="flex flex-col w-full items-center justify-center">
@@ -59,7 +59,7 @@ return (
                             value={password}
                             onChange={(e)=>setPassword(e.target.value)}
                         />
-                        <p>Don't have an account yet? <Link href="/register">Register</Link></p>
+                        <p>Don't have an account yet? <Link className="font-bold" href="/register">Register</Link></p>
                         <Divider/>
                         <Button fullWidth color="primary" type="submit">
                             {loading ? "Loading..." : "Login"}
