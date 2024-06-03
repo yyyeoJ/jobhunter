@@ -13,17 +13,18 @@ const RegisterPage = () => {
     const [confirmPassword,setConfirmPassword] = useState("")
     const [role,setRole] = useState("")
     const [acceptTerms,setAcceptTerms] = useState(false)
+    const [experiences,setExperiences] = useState("")
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const handleRegister=(e)=>{
         if(!fullname || !email || !password || !confirmPassword || !role || !acceptTerms){
-            console.log("Missing credentials")
+            alert("Missing credentials")
             return
         }
         if(password != confirmPassword){
-            console.log("passwords dont match")
+            alert("passwords dont match")
             return
         }
         let userCredentials = {
@@ -45,6 +46,10 @@ const RegisterPage = () => {
         })
 
     }
+
+    experiences.split('\n').forEach((experience)=>{
+        console.log(experience.split(';'))
+    })
 
 
 return (
@@ -104,7 +109,7 @@ return (
             {role == "jobseeker" &&
             <div className="flex flex-col gap-2">
                 <p>Add past experiences </p>
-                <Textarea placeholder="Company;Title;Interval"/>
+                <Textarea value={experiences} onChange={(e)=>setExperiences(e.target.value)} placeholder="Company;Title;Interval"/>
             </div>
             }
             
