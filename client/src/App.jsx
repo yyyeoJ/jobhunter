@@ -6,6 +6,8 @@ import Nav from "./components/Nav"
 import HomePage from "./components/HomePage";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/RegisterPage";
+import Profile from "./components/Profile";
+import JobPosting from "./components/JobPosting";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,14 @@ const router = createBrowserRouter([
   {
     path:'/register',
     element:<RegisterPage/>
+  },
+  {
+    path:'/profile',
+    element:<Profile/>
+  },
+  {
+    path:'/jobposting',
+    element:<JobPosting/>
   }
   
 ]);

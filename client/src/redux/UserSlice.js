@@ -21,8 +21,6 @@ export const registerUser = createAsyncThunk(
     }
 )
 
-
-
 function getUser(){
     let user = localStorage.getItem("user")
     if(user != "undefined"){

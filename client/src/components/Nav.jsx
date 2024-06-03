@@ -16,7 +16,6 @@ const Nav = () => {
 
     const user = useSelector((state)=>state.user)
 
-    console.log(user.user)
 
 
     const dispatch = useDispatch()
@@ -41,14 +40,14 @@ const Nav = () => {
         {user.user &&
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link color="foreground" href="/profile">
             My profile
             </Link>
         </NavbarItem>
         {user.user.user.role === "company" && 
         <NavbarItem>
-            <Link href="#" aria-current="page">
-            Post job posting
+            <Link href="/jobposting" aria-current="page">
+            Add job posting
             </Link>
         </NavbarItem>
         }
