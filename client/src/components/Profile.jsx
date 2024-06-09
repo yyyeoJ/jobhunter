@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-    Button, Card, CardHeader, CardBody, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, useDisclosure
+    Slider, Select, SelectItem, Textarea, Checkbox, Button, Card, CardHeader, CardBody, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, useDisclosure
 } from '@nextui-org/react';
 import axios from 'axios';
-import {useNavigate} from "react-router-dom" 
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+    const jobTypes = [
+        { key: "full-time", label: "Full time" },
+        { key: "part-time", label: "Part time" },
+        { key: "internship", label: "Internship" },
+    ];
+
     const userId = useSelector((state) => state.user.user.user.id);
     const accessToken = useSelector((state) => state.user.user.accessToken);
     const [userData, setUserData] = useState();
@@ -17,7 +23,7 @@ const Profile = () => {
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [newExperience, setNewExperience] = useState({ company: '', title: '', interval: '' });
     const [jobs, setJobs] = useState([]);
-
+    const [selectedJob, setSelectedJob] = useState(null);
     const [applicants, setApplicants] = useState([]);
     const { isOpen: isApplicantsModalOpen, onOpen: openApplicantsModal, onOpenChange: onApplicantsModalOpenChange } = useDisclosure();
 
@@ -27,8 +33,13 @@ const Profile = () => {
                 Authorization: `Bearer ${token}`
             };
 
-            const response = await axios.get(`http://localhost:3030/jobs/${jobId}/applicants`, { headers });
-            setApplicants(response.data.data);
+            const response = await axios.get(`http://localhost:3030/applicants?jobId=${jobId}`, { headers });
+            setApplicants(response.data);
+
+
+
+
+
 
             return response.data;
         } catch (error) {
@@ -38,19 +49,18 @@ const Profile = () => {
     };
 
     const handleViewApplicants = async (jobId) => {
-        //await fetchJobApplicants(jobId, accessToken);
+        await fetchJobApplicants(jobId, accessToken);
         openApplicantsModal();
     };
 
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (accessToken && userId) {
             fetchUserData(accessToken);
         }
     }, [accessToken, userId]);
-    
+
     useEffect(() => {
         if (userData) {
             if (userData.role === "jobseeker") {
@@ -101,11 +111,10 @@ const Profile = () => {
             const headers = {
                 Authorization: `Bearer ${token}`
             };
-    
+
             const response = await axios.get(`http://localhost:3030/jobs?userId=${userId}`, { headers });
             setJobs(response.data.data);
-            console.log(response.data)
-    
+
             return response.data;
         } catch (error) {
             console.error("Error:", error);
@@ -113,17 +122,36 @@ const Profile = () => {
         }
     };
 
-    const handleEditButtonClick = (experience) => {
+    const handleEditExperienceButtonClick = (experience) => {
         setSelectedExperience(experience);
         openEditModal();
     };
 
-    const handleInputChange = (e) => {
+    const handleExperienceInputChange = (e) => {
         const { name, value } = e.target;
         setSelectedExperience((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSaveChanges = async () => {
+    const handleEditJobButtonClick = (job) => {
+        setSelectedJob(job);
+        openEditModal();
+    };
+
+    const handleJobInputChange = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        if (type === 'checkbox') {
+            setSelectedJob((prev) => ({ ...prev, [name]: checked }));
+        } else {
+            setSelectedJob((prev) => ({ ...prev, [name]: value }));
+        }
+    };
+
+    const handleSliderChange = (name, value) => {
+        setSelectedJob((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSaveExperienceChanges = async () => {
         const updatedData = {
             company: selectedExperience.company,
             title: selectedExperience.title,
@@ -141,6 +169,43 @@ const Profile = () => {
             setExperiences((prevExperiences) =>
                 prevExperiences.map((exp) =>
                     exp.id === updatedExperience.id ? updatedExperience : exp
+                )
+            );
+
+            onEditModalOpenChange();
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    };
+
+
+    const handleSaveJobChanges = async () => {
+        const updatedData = {
+            company: selectedJob.company,
+            position: selectedJob.position,
+            description: selectedJob.description,
+            salaryFrom: selectedJob.salaryFrom,
+            salaryTo: selectedJob.salaryTo,
+            type: selectedJob.type,
+            city: selectedJob.city,
+            homeOffice: selectedJob.homeOffice === 1,
+        };
+
+        console.log(updatedData)
+
+
+        try {
+            const headers = {
+                Authorization: `Bearer ${accessToken}`
+            };
+
+            const response = await axios.patch(`http://localhost:3030/jobs/${selectedJob.id}`, updatedData, { headers });
+            const updatedJob = response.data;
+
+            setJobs((prevJobs) =>
+                prevJobs.map((job) =>
+                    job.id === updatedJob.id ? updatedJob : job
                 )
             );
 
@@ -194,9 +259,9 @@ const Profile = () => {
             const headers = {
                 Authorization: `Bearer ${accessToken}`
             };
-    
+
             await axios.delete(`http://localhost:3030/jobs/${jobId}`, { headers });
-    
+
             setJobs((prevJobs) => prevJobs.filter(job => job.id !== jobId));
         } catch (error) {
             console.error("Error:", error);
@@ -212,7 +277,7 @@ const Profile = () => {
                         <CardHeader className="flex justify-between items-center">
                             <p className="text-2xl">My profile</p>
                             {userData && userData.role === "company" ? (
-                                <Button size='sm' color='primary' onPress={()=>{navigate("/jobposting")}}>Add job posting</Button>
+                                <Button size='sm' color='primary' onPress={() => { navigate("/jobposting") }}>Add job posting</Button>
                             ) : (
                                 <Button size='sm' color='primary' onPress={openAddModal}>Add experience</Button>
                             )}
@@ -241,52 +306,48 @@ const Profile = () => {
                             </div>
 
                             {/* Jobseeker specific data */}
-                            {userData && userData.role === "jobseeker" && 
-                            (
-                            <>
-                            <p className="text-lg mb-5 mt-5">Past experiences</p>
-                            <div className='flex flex-col gap-2 justify-center'>
-                                <Divider />
-                                {experiences && experiences.map((element, index) => (
-                                    <div key={index}>
-                                        <div className='flex'>
-                                            <div className='flex-1'>{element.interval}</div>
-                                            <div className='flex-1'>{element.company} : {element.title}</div>
-                                            <Button className='mr-2' color="primary" size='sm' onPress={() => handleEditButtonClick(element)}>Edit</Button>
-                                            <Button color="danger" size='sm' onPress={() => handleDeleteExperience(element.id)}>Delete</Button>
-                                        </div>
+                            {userData && userData.role === "jobseeker" && (
+                                <>
+                                    <p className="text-lg mb-5 mt-5">Past experiences</p>
+                                    <div className='flex flex-col gap-2 justify-center'>
                                         <Divider />
+                                        {experiences && experiences.map((element, index) => (
+                                            <div key={index}>
+                                                <div className='flex'>
+                                                    <div className='flex-1'>{element.interval}</div>
+                                                    <div className='flex-1'>{element.company} : {element.title}</div>
+                                                    <Button className='mr-2' color="primary" size='sm' onPress={() => handleEditExperienceButtonClick(element)}>Edit</Button>
+                                                    <Button color="danger" size='sm' onPress={() => handleDeleteExperience(element.id)}>Delete</Button>
+                                                </div>
+                                                <Divider />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                            </>
-                            )
-                            }
+                                </>
+                            )}
 
                             {/* Company specific data */}
-                            {userData && userData.role === "company" && 
-                            (
+                            {userData && userData.role === "company" && (
                                 <>
-                                <p className="text-lg mb-5 mt-5">Job Postings</p>
-                                <div className='flex flex-col gap-2 justify-center'>
-                                    <Divider />
-                                    {jobs && jobs.map((job, index) => (
-                                        <div key={index}>
-                                            <div className='flex mb-2 items-center'>
-                                                <div className='flex-1'>{job.position}</div>
-                                                <div className='flex-1'>{job.company}</div>
-                                                <Button onPress={() => handleViewApplicants(job.id)} className='mr-2' color="success" size='sm'>View</Button>
-                                                <Button className='mr-2' color="primary" size='sm' onPress={() => handleEditButtonClick(job)}>Edit</Button>
-                                                <Button color="danger" size='sm' onPress={() => handleDeleteJob(job.id)}>Delete</Button>
+                                    <p className="text-lg mb-5 mt-5">Job Postings</p>
+                                    <div className='flex flex-col gap-2 justify-center'>
+                                        <Divider />
+                                        {jobs && jobs.map((job, index) => (
+                                            <div key={index}>
+                                                <div className='flex mb-2 items-center'>
+                                                    <div className='flex-1'>{job.position}</div>
+                                                    <div className='flex-1'>{job.company}</div>
+                                                    <Button onPress={() => handleViewApplicants(job.id)} className='mr-2' color="success" size='sm'>View</Button>
+                                                    <Button className='mr-2' color="primary" size='sm' onPress={() => handleEditJobButtonClick(job)}>Edit</Button>
+                                                    <Button color="danger" size='sm' onPress={() => handleDeleteJob(job.id)}>Delete</Button>
+                                                </div>
+                                                <Divider />
                                             </div>
-                                            <Divider />
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
                                 </>
-                            )
-                            }
-                            
+                            )}
+
                         </CardBody>
                     </Card>
                 }
@@ -298,51 +359,123 @@ const Profile = () => {
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                            {userData && userData.role === "company" ? (
-                                <p>Edit job posting</p>
-                            ) : (
-                                <p>Edit experience</p>
-                            )}
+                                {userData && userData.role === "company" ? (
+                                    <p>Edit job posting</p>
+                                ) : (
+                                    <p>Edit experience</p>
+                                )}
                             </ModalHeader>
                             <ModalBody>
                                 {userData && userData.role === "jobseeker" && (
                                     <>
-                                    <Input
-                                        label="Interval"
-                                        name="interval"
-                                        value={selectedExperience?.interval || ''}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Company"
-                                        name="company"
-                                        value={selectedExperience?.company || ''}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Title"
-                                        name="title"
-                                        value={selectedExperience?.title || ''}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                    />
+                                        <Input
+                                            label="Interval"
+                                            name="interval"
+                                            value={selectedExperience?.interval || ''}
+                                            onChange={handleExperienceInputChange}
+                                            fullWidth
+                                        />
+                                        <Input
+                                            label="Company"
+                                            name="company"
+                                            value={selectedExperience?.company || ''}
+                                            onChange={handleExperienceInputChange}
+                                            fullWidth
+                                        />
+                                        <Input
+                                            label="Title"
+                                            name="title"
+                                            value={selectedExperience?.title || ''}
+                                            onChange={handleExperienceInputChange}
+                                            fullWidth
+                                        />
                                     </>
                                 )}
 
                                 {userData && userData.role === "company" && (
                                     <>
-                                    <p>Job posting data</p>
+                                        <Input
+                                            value={selectedJob.position}
+                                            onChange={handleJobInputChange}
+                                            size="sm"
+                                            type="text"
+                                            label="Position"
+                                            name="position"
+                                        />
+
+                                        <Input
+                                            label="City"
+                                            name="city"
+                                            value={selectedJob.city}
+                                            onChange={handleJobInputChange}
+                                            fullWidth
+                                        />
+
+                                        <Slider
+                                            label="Salary range minimum"
+                                            name="salaryFrom"
+                                            step={50000}
+                                            minValue={100000}
+                                            maxValue={2000000}
+                                            value={selectedJob.salaryFrom}
+                                            onChange={(value) => handleSliderChange('salaryFrom', value)}
+                                            formatOptions={{ style: "currency", currency: "HUF", minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+                                            className="max-w-md"
+                                        />
+
+                                        <Slider
+                                            label="Salary range maximum"
+                                            name="salaryTo"
+                                            step={50000}
+                                            minValue={100000}
+                                            maxValue={2000000}
+                                            value={selectedJob.salaryTo}
+                                            onChange={(value) => handleSliderChange('salaryTo', value)}
+                                            formatOptions={{ style: "currency", currency: "HUF", minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+                                            className="max-w-md"
+                                        />
+
+                                        <Select
+                                            label="Type"
+                                            name="type"
+                                            placeholder="Select a job type"
+                                            className="w-[100%]"
+                                            selectedKeys={[selectedJob.type]}
+                                            onChange={(value) => handleJobInputChange({ target: { name: 'type', value } })}
+                                        >
+                                            {jobTypes.map((type) => (
+                                                <SelectItem key={type.key}>
+                                                    {type.label}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+
+                                        <div className="flex flex-col gap-2">
+                                            <Textarea
+                                                placeholder="Description"
+                                                name="description"
+                                                value={selectedJob.description}
+                                                onChange={handleJobInputChange}
+                                            />
+                                        </div>
+
+                                        <Checkbox
+                                            name="homeOffice"
+                                            isSelected={selectedJob.homeOffice}
+                                            size="sm"
+                                            onChange={(e) => handleJobInputChange({ target: e.target })}
+                                        >
+                                            Home office
+                                        </Checkbox>
                                     </>
                                 )}
-                                
+
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>
                                     Close
                                 </Button>
-                                <Button color="primary" onPress={handleSaveChanges}>
+                                <Button color="primary" onPress={userData && userData.role === "company" ? handleSaveJobChanges : handleSaveExperienceChanges}>
                                     Save Changes
                                 </Button>
                             </ModalFooter>
@@ -404,19 +537,12 @@ const Profile = () => {
                                 <p>Applicants</p>
                             </ModalHeader>
                             <ModalBody>
-                                {applicants.length === 0 ? (
-                                    <p>No applicants found.</p>
-                                ) : (
-                                    <>
-                                        {applicants.map((applicant, index) => (
-                                            <div key={index} className='flex mb-2 items-center'>
-                                                <div className='flex-1'>{applicant.fullname}</div>
-                                                <div className='flex-1'>{applicant.email}</div>
-                                                <Button  color="primary" size='sm'>View CV</Button>
-                                            </div>
-                                        ))}
-                                    </>
-                                )}
+                                {applicants && applicants.map((applicant, index) => (
+                                    <div key={index} className='flex mb-2 items-center'>
+                                        <div className='flex-1'>{applicant.user.fullname}</div>
+                                        <div className='flex-1'>{applicant.user.email}</div>
+                                    </div>
+                                ))}
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>
