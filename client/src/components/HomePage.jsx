@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import axios from "axios";
-import { Select,SelectItem,Checkbox,Slider,Input, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Card, CardBody } from "@nextui-org/react";
+import { Select, SelectItem, Checkbox, Slider, Input, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Card, CardBody } from "@nextui-org/react";
 
 const HomePage = () => {
     const { isOpen: isJobDetailsOpen, onOpen: openJobDetails, onOpenChange: onJobDetailsOpenChange } = useDisclosure();
@@ -13,15 +14,15 @@ const HomePage = () => {
     const [searchInput, setSearchInput] = useState("");
     const [searchableName, setSearchableName] = useState("");
     // filters
-    const [salaryFrom,setSalaryFrom] = useState(500000)
-    const [salaryTo,setSalaryTo] = useState(1000000)
-    const [homeOffice,setHomeOffice] = useState(false)
-    const [city,setCity] = useState("")
-    const [type,setType] = useState("")
+    const [salaryFrom, setSalaryFrom] = useState(500000);
+    const [salaryTo, setSalaryTo] = useState(1000000);
+    const [homeOffice, setHomeOffice] = useState(false);
+    const [city, setCity] = useState("");
+    const [type, setType] = useState("");
     const jobTypes = [
-        {key: "full-time", label: "Full time"},
-        {key: "part-time", label: "Part time"},
-        {key: "internship", label: "Internship"},
+        { key: "full-time", label: "Full time" },
+        { key: "part-time", label: "Part time" },
+        { key: "internship", label: "Internship" },
     ];
 
     const formatCurrency = (number, locale = 'hu-HU', currency = 'HUF') => {
@@ -44,17 +45,13 @@ const HomePage = () => {
         }
     };
 
-
-
-    // http://localhost:3030/jobs?userId=1&salaryFrom[$gt]=350000&company[$like]=%miff%
     const fetchFilteredData = async () => {
-        
         const queryParams = [];
-        if (salaryTo) {queryParams.push(`salaryTo[$gt]=${salaryTo}`);}
-        if (salaryFrom) {queryParams.push(`salaryFrom[$gt]=${salaryFrom}`);}
-        if (homeOffice !== false) {queryParams.push(`homeOffice=${homeOffice}`);}
-        if (type) {queryParams.push(`type=${type}`);}
-        if (city) {queryParams.push(`city=${encodeURIComponent(city)}`)}
+        if (salaryTo) { queryParams.push(`salaryTo[$gt]=${salaryTo}`); }
+        if (salaryFrom) { queryParams.push(`salaryFrom[$gt]=${salaryFrom}`); }
+        if (homeOffice !== false) { queryParams.push(`homeOffice=${homeOffice}`); }
+        if (type) { queryParams.push(`type=${type}`); }
+        if (city) { queryParams.push(`city=${encodeURIComponent(city)}`); }
 
         try {
             const response = await axios.get(`http://localhost:3030/jobs${queryParams.length > 0 ? '?' + queryParams.join('&') : ''}`);
@@ -75,6 +72,26 @@ const HomePage = () => {
     };
 
     const filteredJobs = jobs.filter(job => searchableName === "" || job.position.toLowerCase().includes(searchableName.toLowerCase()));
+
+    // Get the user state from Redux
+    const user = useSelector((state) => state.user);
+
+    const handleApply = async (id) =>{
+        try {
+            const headers = {
+                Authorization: `Bearer ${user.user.accessToken}`
+            };
+
+            await axios.post(`http://localhost:3030/applicants`, {"jobId":id},{ headers });
+            onJobDetailsOpenChange(false);
+            alert("Applied successfully");
+
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    }
+
 
     return (
         <>
@@ -105,9 +122,11 @@ const HomePage = () => {
                                 <Button color="danger" variant="light" onPress={onClose}>
                                     Close
                                 </Button>
-                                <Button color="primary" onPress={onClose}>
-                                    Apply
-                                </Button>
+                                {user.user && user.user.user.role === "jobseeker" && (
+                                    <Button color="primary" onPress={()=>{handleApply(selectedJob.id)}}>
+                                        Apply
+                                    </Button>
+                                )}
                             </ModalFooter>
                         </>
                     )}
