@@ -8,7 +8,6 @@ import {useNavigate} from "react-router-dom"
 const jobTypes = [
     {key: "full-time", label: "Full time"},
     {key: "part-time", label: "Part time"},
-    {key: "student", label: "Student job"},
     {key: "internship", label: "Internship"},
 ];
 
@@ -113,7 +112,7 @@ const JobPosting = () => {
                 value={salary}
                 onChange={setSalary}
                 
-                formatOptions={{style: "currency", currency: "HUF"}}
+                formatOptions={{style: "currency", currency: "HUF", minimumFractionDigits:0, maximumFractionDigits:0}}
                 className="max-w-md"
                 />
                 

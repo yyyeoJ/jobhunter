@@ -2,8 +2,9 @@ import { Link, Textarea, RadioGroup, Radio, Checkbox, Input, Button, Card, CardH
 import logo from "../assets/logo.png";
 import { useState } from "react";
 import {useDispatch, useSelector} from "react-redux"
-import { registerUser } from "../redux/UserSlice";
+import { registerUser,loginUser} from "../redux/UserSlice";
 import {useNavigate} from "react-router-dom"
+import axios from "axios";
 
 const RegisterPage = () => {
 
@@ -18,38 +19,68 @@ const RegisterPage = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const handleRegister=(e)=>{
-        if(!fullname || !email || !password || !confirmPassword || !role || !acceptTerms){
-            alert("Missing credentials")
-            return
+    const registerUserExperience = async (experiences, token) => {
+        try {
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+    
+            const response = await axios.post("http://localhost:3030/experiences", experiences, { headers });
+            
+            return response.data;
+        } catch (error) {
+            console.error("Error registering user experience:", error);
+            throw error;
         }
-        if(password != confirmPassword){
-            alert("passwords dont match")
-            return
+    };
+
+    const handleRegister = (e) => {
+        if (!fullname || !email || !password || !confirmPassword || !role || !acceptTerms) {
+            alert("Missing credentials");
+            return;
+        }
+        if (password !== confirmPassword) {
+            alert("Passwords don't match");
+            return;
         }
         let userCredentials = {
-            "email": email,
-            "password": password,
-            "fullname": fullname,
-            "role": role
-        }
-        dispatch(registerUser(userCredentials)).then((result)=>{
-            if(result.payload){
-                setEmail("")
-                setPassword("")
-                setConfirmPassword("")
-                setFullname("")
-                setAcceptTerms(false)
-                setRole("")
-                navigate("/login")
+            email: email,
+            password: password,
+            fullname: fullname,
+            role: role
+        };
+        dispatch(registerUser(userCredentials)).then((result) => {
+            if (result.payload) {
+                dispatch(loginUser({ email: email, password: password,"strategy":"local" })).then((loginResult) => {
+                    if (loginResult.payload) {
+                        if(experiencesArray && role == "jobseeker"){
+                            registerUserExperience(experiencesFormatted,loginResult.payload.accessToken)
+                        }
+                        
+                        setEmail("");
+                        setPassword("");
+                        setConfirmPassword("");
+                        setFullname("");
+                        setAcceptTerms(false);
+                        setRole("");
+                        navigate("/");
+                        
+                        
+                    }
+                });
             }
-        })
-
-    }
-
+        });
+    };
+    const experiencesArray = []
     experiences.split('\n').forEach((experience)=>{
-        console.log(experience.split(';'))
+        experiencesArray.push(experience.split(';'))
     })
+    const experiencesFormatted = experiencesArray.map(experience => ({
+        company: experience[0],
+        title: experience[1],
+        interval: experience[2]
+    }));
+
 
 
 return (
@@ -96,6 +127,14 @@ return (
             type="password"
             label="Retype Password"
             />
+
+            {role == "jobseeker" &&
+            <div className="flex flex-col gap-2">
+                <p>Add past experiences </p>
+                <Textarea value={experiences} onChange={(e)=>setExperiences(e.target.value)} placeholder="Company;Title;Interval"/>
+            </div>
+            }
+
             <RadioGroup
             isRequired
             label="I want to register as a :"
@@ -106,12 +145,7 @@ return (
             <Radio size="sm" value="company">Company</Radio>
             </RadioGroup>
 
-            {role == "jobseeker" &&
-            <div className="flex flex-col gap-2">
-                <p>Add past experiences </p>
-                <Textarea value={experiences} onChange={(e)=>setExperiences(e.target.value)} placeholder="Company;Title;Interval"/>
-            </div>
-            }
+            
             
             <Divider/>
             <p>Already have an account? <Link className="font-bold" href="/login">Login instead</Link></p>

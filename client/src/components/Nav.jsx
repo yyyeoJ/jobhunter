@@ -2,21 +2,20 @@ import React, { useEffect,useState } from 'react'
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button} from "@nextui-org/react";
 import logo from "../assets/logo.png"
 import {useDispatch, useSelector} from "react-redux"
-import { logoutUser } from '../redux/UserSlice';
-
+import { logoutUser } from '../redux/UserSlice';   
+import {useNavigate} from "react-router-dom" 
 
 const Nav = () => {
 
-    
+    const navigate = useNavigate()
+
     const handleLogout = ()=>{
         localStorage.removeItem("user")
         dispatch(logoutUser())
-        
+        navigate("/")
     }
 
     const user = useSelector((state)=>state.user)
-
-
 
     const dispatch = useDispatch()
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -44,7 +43,7 @@ const Nav = () => {
             My profile
             </Link>
         </NavbarItem>
-        {user.user.user.role === "company" && 
+        {user.user.role === "company" && 
         <NavbarItem>
             <Link href="/jobposting" aria-current="page">
             Add job posting

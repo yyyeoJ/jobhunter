@@ -238,33 +238,49 @@ Az elkészült program beadása a Canvasen történik, és két dolgot kell ide 
 
 ## **Pontozás**
 
+TODO: state-be elmenteni: userid token error loading
+
+
+- [ ] Munkavállaló - Álláshirdetések oldala: A gomb megjelenik, amivel az  állásra tudunk jelentkezni. Sikeres kérés esetén a felhasználó számára megjelenik egy üzenet
+        USERID és JOBID alapján POST REQUEST
+- [ ] Munkavállaló - Profilom: A korábban hozzáadott munkatapasztalatok szerkeszthetőek (1pt) MIUTÁN KI VANNAK LISTÁZVA, PATCH,POST,DELETE
+
+- [ ] Munkáltató - Profilom: Listázásra kerülnek a hozzáadott álláshirdetések, az egyes listaelemek mellett a szerkesztés, törlés és megtekintés opciók, megjelenik a “Hozzáadás” gomb (2pt)
+- [ ] Munkáltató - Profilom: Álláshirdetés törlése működik (1pt)
+- [ ] Munkáltató - Profilom: Álláshirdetés szerkesztése működik (2pt)
+
+- [ ] Munkáltató - Profilom: A megtekintés gomb hatására a felhasználó számára listázásra kerülnek az adott hirdetésre jelentkezett munkavállalók (1pt)
+- [ ] Plusz feladat: az álláshirdetések listája infinite-scrollinggal jelenik meg (+2pt)
+
+
+
 - [x] Ennek a README.md fájlnak a  kitöltése. (kötelező)
-- [ ] React használata (kötelező)
-- [ ] Redux használata (kötelező)
-- [ ] Navigáció: Navigáció megfelelően változik a be- és kijelentkezésnek megfelelően (1pt)
-- [ ] Navigáció: Az oldal kezeli, hogy munkáltatóként vagy munkavállalóként jelentkezünk be, más más navigációt jelenít meg (1pt)
-- [ ] Főoldal: A Főoldal megjelenik a keresővel (1pt)
-- [ ] Főoldal: Az oldalon kilistázza a meghirdetett állásokat (1pt)
-- [ ] Főoldal: Az oldalon lehet szűrni az állásokra (2pt)
-- [ ] Főoldal: Az állásokra kattintva átvisz minket az alkalmazás az álláshirdetés részletező oldalára, ahol az ahhoz tartozó adatok jelennek meg (2pt)
-- [ ] Regisztráció: A regisztráció működik (1pt)
-- [ ] Regisztráció: A felhasználó munkavállalóként és munkáltatóként is regisztrálhat, különböző mezők jelennek meg a leendő fiók típusától függően (3pt)
-- [ ] Regisztráció: Munkavállaló regisztráció esetén a felhasználó meg tudja adni a tapasztalatait (2pt)
-- [ ] Bejelentkezés: Bejelentkezés működik (1pt)
-- [ ] Munkavállaló - Profilom: Látszódnak a munkavállaló adatai (név, email cím), és az oldalon kilistázza az előző munkahelyeket (1pt)
+- [x] React használata (kötelező)
+- [x] Redux használata (kötelező)
+- [x] Navigáció: Navigáció megfelelően változik a be- és kijelentkezésnek megfelelően (1pt)
+- [x] Navigáció: Az oldal kezeli, hogy munkáltatóként vagy munkavállalóként jelentkezünk be, más más navigációt jelenít meg (1pt)
+- [x] Főoldal: A Főoldal megjelenik a keresővel (1pt)
+- [x] Főoldal: Az oldalon kilistázza a meghirdetett állásokat (1pt)
+- [x] Főoldal: Az oldalon lehet szűrni az állásokra (2pt)
+- [x] Főoldal: Az állásokra kattintva átvisz minket az alkalmazás az álláshirdetés részletező oldalára, ahol az ahhoz tartozó adatok jelennek meg (2pt)
+- [x] Regisztráció: A regisztráció működik (1pt)
+- [x] Regisztráció: A felhasználó munkavállalóként és munkáltatóként is regisztrálhat, különböző mezők jelennek meg a leendő fiók típusától függően (3pt)
+- [x] Regisztráció: Munkavállaló regisztráció esetén a felhasználó meg tudja adni a tapasztalatait (2pt)
+- [x] Bejelentkezés: Bejelentkezés működik (1pt)
+- [x] Munkavállaló - Profilom: Látszódnak a munkavállaló adatai (név, email cím), és az oldalon kilistázza az előző munkahelyeket (1pt)
 - [ ] Munkavállaló - Profilom: A korábban hozzáadott munkatapasztalatok szerkeszthetőek (1pt)
 - [ ] Munkavállaló - Álláshirdetések oldala: A gomb megjelenik, amivel az állásra tudunk jelentkezni. Sikeres kérés esetén a felhasználó számára megjelenik egy üzenet a sikeres jelentkezésről (1 pont)
-- [ ] Munkáltató - Navigáció: Kizárólag bejelentkezett munkáltató esetén jelenik meg az álláshirdetés hozzáadása opció (1pt)
+- [x] Munkáltató - Navigáció: Kizárólag bejelentkezett munkáltató esetén jelenik meg az álláshirdetés hozzáadása opció (1pt)
 - [ ] Munkáltató - Profilom: Listázásra kerülnek a hozzáadott álláshirdetések, az egyes listaelemek mellett a szerkesztés, törlés és megtekintés opciók, megjelenik a “Hozzáadás” gomb (2pt)
 - [ ] Munkáltató - Profilom: A megtekintés gomb hatására a felhasználó számára listázásra kerülnek az adott hirdetésre jelentkezett munkavállalók (1pt)
 - [ ] Munkáltató - Profilom: Álláshirdetés törlése működik (1pt)
-- [ ] Munkáltató - Álláshirdetés hozzáadása: Álláshirdetés hozzáadása működik (2pt)
+- [x] Munkáltató - Álláshirdetés hozzáadása: Álláshirdetés hozzáadása működik (2pt)
 - [ ] Munkáltató - Profilom: Álláshirdetés szerkesztése működik (2pt)
-- [ ] Profilom: Kijelentkezés gomb működik(1pt)
-- [ ] Igényes megjelenés (2pt)
+- [x] Profilom: Kijelentkezés gomb működik(1pt)
+- [x] Igényes megjelenés (2pt)
 
 Összesen: 30 pont (Minimum: 12 pont)
 
 - [ ] Plusz feladat: az álláshirdetések listája infinite-scrollinggal jelenik meg (+2pt)
-- [ ] Plusz feladat: az álláshirdetések létrehozásánál a munkáltató egy range-sliderrel tudja megadni a fizetés minimum és maximum értékét (+2pt)
-- [ ] Plusz feladat: Modalban jelenik meg az oldal valamely része (vagy az álláshirdetés leírása, vagy a az álláshirdetésre jelentkező emberek listája, akár a profiljai) (+1pt)
+- [x] Plusz feladat: az álláshirdetések létrehozásánál a munkáltató egy range-sliderrel tudja megadni a fizetés minimum és maximum értékét (+2pt)
+- [x] Plusz feladat: Modalban jelenik meg az oldal valamely része (vagy az álláshirdetés leírása, vagy a az álláshirdetésre jelentkező emberek listája, akár a profiljai) (+1pt)

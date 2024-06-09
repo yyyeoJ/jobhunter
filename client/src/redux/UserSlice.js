@@ -16,11 +16,11 @@ export const registerUser = createAsyncThunk(
     async(userCredentials)=>{
         const request = await axios.post("http://localhost:3030/users",userCredentials)
         const response = await request.data
-        localStorage.setItem("user",JSON.stringify(response))
         return response
     }
 )
 
+//TODO: átalakítani get request-re
 function getUser(){
     let user = localStorage.getItem("user")
     if(user != "undefined"){
