@@ -15,7 +15,6 @@ const JobPosting = () => {
 
     const user = useSelector((state)=>state.user)
 
-    const [company,setCompany] = useState("")
     const [position,setPosition] = useState("")
     const [description,setDescription] = useState("")
     const [salary,setSalary] = useState([500000,1000000])
@@ -24,7 +23,7 @@ const JobPosting = () => {
     const [homeOffice,setHomeOffice] = useState(false)
 
     const jobData = {
-        "company": company,
+        "company": user.user.user.fullname,
         "position": position,
         "description": description,
         "salaryFrom": salary[0], 
@@ -68,14 +67,6 @@ const JobPosting = () => {
             <CardBody>
             <div className="flex w-full flex-wrap flex-col md:flex-nowrap gap-4">
                 <p>Create new job posting</p>
-                <Input
-                value={company}
-                onChange={(e)=>setCompany(e.target.value)}
-                isRequired
-                size="sm"
-                type="text"
-                label="Company name"
-                />
                 <Input
                 value={position}
                 onChange={(e)=>setPosition(e.target.value)}

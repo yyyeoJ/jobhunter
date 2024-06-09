@@ -43,7 +43,7 @@ const Nav = () => {
             My profile
             </Link>
         </NavbarItem>
-        {user.user.role === "company" && 
+        {user.user.user.role === "company" && 
         <NavbarItem>
             <Link href="/jobposting" aria-current="page">
             Add job posting

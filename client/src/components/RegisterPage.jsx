@@ -101,7 +101,7 @@ return (
             isRequired
             size="sm"
             type="text"
-            label="Full Name"
+            label={role === "company" ? "Company name" : "Full name"}
             />
             <Input
             value={email}

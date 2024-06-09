@@ -4,6 +4,7 @@ import {
     Button, Card, CardHeader, CardBody, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, useDisclosure
 } from '@nextui-org/react';
 import axios from 'axios';
+import {useNavigate} from "react-router-dom" 
 
 const Profile = () => {
     const userId = useSelector((state) => state.user.user.user.id);
@@ -15,11 +16,51 @@ const Profile = () => {
     const { isOpen: isAddModalOpen, onOpen: openAddModal, onOpenChange: onAddModalOpenChange } = useDisclosure();
     const [selectedExperience, setSelectedExperience] = useState(null);
     const [newExperience, setNewExperience] = useState({ company: '', title: '', interval: '' });
+    const [jobs, setJobs] = useState([]);
+
+    const [applicants, setApplicants] = useState([]);
+    const { isOpen: isApplicantsModalOpen, onOpen: openApplicantsModal, onOpenChange: onApplicantsModalOpenChange } = useDisclosure();
+
+    const fetchJobApplicants = async (jobId, token) => {
+        try {
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+
+            const response = await axios.get(`http://localhost:3030/jobs/${jobId}/applicants`, { headers });
+            setApplicants(response.data.data);
+
+            return response.data;
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    };
+
+    const handleViewApplicants = async (jobId) => {
+        //await fetchJobApplicants(jobId, accessToken);
+        openApplicantsModal();
+    };
+
+
+    const navigate = useNavigate()
 
     useEffect(() => {
-        fetchUserData(accessToken);
-        fetchUserExperience(accessToken);
-    }, []);
+        if (accessToken && userId) {
+            fetchUserData(accessToken);
+        }
+    }, [accessToken, userId]);
+    
+    useEffect(() => {
+        if (userData) {
+            if (userData.role === "jobseeker") {
+                fetchUserExperience(accessToken);
+            }
+            if (userData.role === "company") {
+                fetchUserJobs(accessToken);
+            }
+        }
+    }, [userData]);
 
     const fetchUserData = async (token) => {
         try {
@@ -48,6 +89,23 @@ const Profile = () => {
             const response = await axios.get(`http://localhost:3030/experiences`, { headers });
             setExperiences(response.data.data);
 
+            return response.data;
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    };
+
+    const fetchUserJobs = async (token) => {
+        try {
+            const headers = {
+                Authorization: `Bearer ${token}`
+            };
+    
+            const response = await axios.get(`http://localhost:3030/jobs?userId=${userId}`, { headers });
+            setJobs(response.data.data);
+            console.log(response.data)
+    
             return response.data;
         } catch (error) {
             console.error("Error:", error);
@@ -131,6 +189,21 @@ const Profile = () => {
         }
     };
 
+    const handleDeleteJob = async (jobId) => {
+        try {
+            const headers = {
+                Authorization: `Bearer ${accessToken}`
+            };
+    
+            await axios.delete(`http://localhost:3030/jobs/${jobId}`, { headers });
+    
+            setJobs((prevJobs) => prevJobs.filter(job => job.id !== jobId));
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    };
+
     return (
         <>
             <div className='flex justify-center mt-16'>
@@ -138,7 +211,11 @@ const Profile = () => {
                     <Card className="w-[60%]">
                         <CardHeader className="flex justify-between items-center">
                             <p className="text-2xl">My profile</p>
-                            <Button size='sm' color='primary' onPress={openAddModal}>Add experience</Button>
+                            {userData && userData.role === "company" ? (
+                                <Button size='sm' color='primary' onPress={()=>{navigate("/jobposting")}}>Add job posting</Button>
+                            ) : (
+                                <Button size='sm' color='primary' onPress={openAddModal}>Add experience</Button>
+                            )}
                         </CardHeader>
                         <Divider />
 
@@ -163,6 +240,10 @@ const Profile = () => {
                                 <Divider />
                             </div>
 
+                            {/* Jobseeker specific data */}
+                            {userData && userData.role === "jobseeker" && 
+                            (
+                            <>
                             <p className="text-lg mb-5 mt-5">Past experiences</p>
                             <div className='flex flex-col gap-2 justify-center'>
                                 <Divider />
@@ -178,40 +259,84 @@ const Profile = () => {
                                     </div>
                                 ))}
                             </div>
+                            </>
+                            )
+                            }
+
+                            {/* Company specific data */}
+                            {userData && userData.role === "company" && 
+                            (
+                                <>
+                                <p className="text-lg mb-5 mt-5">Job Postings</p>
+                                <div className='flex flex-col gap-2 justify-center'>
+                                    <Divider />
+                                    {jobs && jobs.map((job, index) => (
+                                        <div key={index}>
+                                            <div className='flex mb-2 items-center'>
+                                                <div className='flex-1'>{job.position}</div>
+                                                <div className='flex-1'>{job.company}</div>
+                                                <Button onPress={() => handleViewApplicants(job.id)} className='mr-2' color="success" size='sm'>View</Button>
+                                                <Button className='mr-2' color="primary" size='sm' onPress={() => handleEditButtonClick(job)}>Edit</Button>
+                                                <Button color="danger" size='sm' onPress={() => handleDeleteJob(job.id)}>Delete</Button>
+                                            </div>
+                                            <Divider />
+                                        </div>
+                                    ))}
+                                </div>
+                                </>
+                            )
+                            }
+                            
                         </CardBody>
                     </Card>
                 }
             </div>
 
+            {/* Editing modal */}
             <Modal size='lg' backdrop="blur" isOpen={isEditModalOpen} onOpenChange={onEditModalOpenChange}>
                 <ModalContent>
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                                <p>Edit Experience</p>
+                            {userData && userData.role === "company" ? (
+                                <p>Edit job posting</p>
+                            ) : (
+                                <p>Edit experience</p>
+                            )}
                             </ModalHeader>
                             <ModalBody>
-                                <Input
-                                    label="Interval"
-                                    name="interval"
-                                    value={selectedExperience?.interval || ''}
-                                    onChange={handleInputChange}
-                                    fullWidth
-                                />
-                                <Input
-                                    label="Company"
-                                    name="company"
-                                    value={selectedExperience?.company || ''}
-                                    onChange={handleInputChange}
-                                    fullWidth
-                                />
-                                <Input
-                                    label="Title"
-                                    name="title"
-                                    value={selectedExperience?.title || ''}
-                                    onChange={handleInputChange}
-                                    fullWidth
-                                />
+                                {userData && userData.role === "jobseeker" && (
+                                    <>
+                                    <Input
+                                        label="Interval"
+                                        name="interval"
+                                        value={selectedExperience?.interval || ''}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                    <Input
+                                        label="Company"
+                                        name="company"
+                                        value={selectedExperience?.company || ''}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                    <Input
+                                        label="Title"
+                                        name="title"
+                                        value={selectedExperience?.title || ''}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                    </>
+                                )}
+
+                                {userData && userData.role === "company" && (
+                                    <>
+                                    <p>Job posting data</p>
+                                    </>
+                                )}
+                                
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>
@@ -226,6 +351,7 @@ const Profile = () => {
                 </ModalContent>
             </Modal>
 
+            {/* Adding modal */}
             <Modal size='lg' backdrop="blur" isOpen={isAddModalOpen} onOpenChange={onAddModalOpenChange}>
                 <ModalContent>
                     {(onClose) => (
@@ -262,6 +388,39 @@ const Profile = () => {
                                 </Button>
                                 <Button color="primary" onPress={handleAddExperience}>
                                     Add Experience
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
+            {/* applicants modal */}
+            <Modal size='lg' backdrop="blur" isOpen={isApplicantsModalOpen} onOpenChange={onApplicantsModalOpenChange}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">
+                                <p>Applicants</p>
+                            </ModalHeader>
+                            <ModalBody>
+                                {applicants.length === 0 ? (
+                                    <p>No applicants found.</p>
+                                ) : (
+                                    <>
+                                        {applicants.map((applicant, index) => (
+                                            <div key={index} className='flex mb-2 items-center'>
+                                                <div className='flex-1'>{applicant.fullname}</div>
+                                                <div className='flex-1'>{applicant.email}</div>
+                                                <Button  color="primary" size='sm'>View CV</Button>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="light" onPress={onClose}>
+                                    Close
                                 </Button>
                             </ModalFooter>
                         </>
