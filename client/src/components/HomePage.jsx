@@ -232,7 +232,7 @@ const HomePage = () => {
 
             <div className='flex flex-col items-center justify-center gap-5 mb-16 mt-5'>
                 <div className='text-5xl'>Available jobs</div>
-                <div className='flex items-center gap-3 w-[40%]'>
+                <div className='flex items-center gap-3 lg:flex-row w-[90%] lg:w-[40%]'>
                     <Input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} type="text" label="Enter job title" />
                     <Button size='lg' color='primary' onPress={() => setSearchableName(searchInput)}>Search</Button>
                     <Button size='lg' color='default' onPress={openFilter}>Filter</Button>
@@ -246,7 +246,7 @@ const HomePage = () => {
                 <div className='flex flex-col gap-5 items-center justify-center w-[100%]'>
                     {filteredJobs.length > 0 ? (
                         filteredJobs.map(job => (
-                            <Card key={job.id} className="w-[40%]">
+                            <Card key={job.id} className="w-[90%] lg:w-[40%]">
                                 <CardBody className='flex flex-row justify-start'>
                                     <div className='w-[50%]'>
                                         <p>{job.position}</p>

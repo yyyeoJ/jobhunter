@@ -22,16 +22,19 @@ const JobPosting = () => {
     const [city,setCity] = useState("")
     const [homeOffice,setHomeOffice] = useState(false)
 
-    const jobData = {
-        "company": user.user.user.fullname,
-        "position": position,
-        "description": description,
-        "salaryFrom": salary[0], 
-        "salaryTo": salary[1],
-        "type": type,
-        "city": city,
-        "homeOffice": homeOffice
+    if(user.user){
+        const jobData = {
+            "company": user.user.user.fullname,
+            "position": position,
+            "description": description,
+            "salaryFrom": salary[0], 
+            "salaryTo": salary[1],
+            "type": type,
+            "city": city,
+            "homeOffice": homeOffice
+        }
     }
+    
 
     const navigate = useNavigate()
 

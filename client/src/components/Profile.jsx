@@ -276,7 +276,7 @@ const Profile = () => {
         <>
             <div className='flex justify-center mt-16'>
                 {loading ? <div>Loading...</div> :
-                    <Card className="w-[60%]">
+                    <Card className="w-[90%] lg:w-[40%]">
                         <CardHeader className="flex justify-between items-center">
                             <p className="text-2xl">My profile</p>
                             {userData && userData.role === "company" ? (
@@ -319,10 +319,12 @@ const Profile = () => {
                                                 <div className='flex'>
                                                     <div className='flex-1'>{element.interval}</div>
                                                     <div className='flex-1'>{element.company} : {element.title}</div>
-                                                    <Button className='mr-2' color="primary" size='sm' onPress={() => handleEditExperienceButtonClick(element)}>Edit</Button>
-                                                    <Button color="danger" size='sm' onPress={() => handleDeleteExperience(element.id)}>Delete</Button>
+                                                    <div className='flex flex-col sm:flex-row gap-2 items-center justify-center mr-2 ml-2'>
+                                                        <Button color="primary" size='sm' onPress={() => handleEditExperienceButtonClick(element)}>Edit</Button>
+                                                        <Button color="danger" size='sm' onPress={() => handleDeleteExperience(element.id)}>Delete</Button>
+                                                    </div>
                                                 </div>
-                                                <Divider />
+                                                <Divider className='my-2'/>
                                             </div>
                                         ))}
                                     </div>
@@ -340,9 +342,11 @@ const Profile = () => {
                                                 <div className='flex mb-2 items-center'>
                                                     <div className='flex-1'>{job.position}</div>
                                                     <div className='flex-1'>{job.company}</div>
-                                                    <Button onPress={() => handleViewApplicants(job.id)} className='mr-2' color="success" size='sm'>View</Button>
-                                                    <Button className='mr-2' color="primary" size='sm' onPress={() => handleEditJobButtonClick(job)}>Edit</Button>
-                                                    <Button color="danger" size='sm' onPress={() => handleDeleteJob(job.id)}>Delete</Button>
+                                                    <div className='flex flex-col sm:flex-row gap-2 items-center justify-center mr-2'>
+                                                        <Button size='sm' onPress={() => handleViewApplicants(job.id)} color="success">View</Button>
+                                                        <Button size='sm' color="primary" onPress={() => handleEditJobButtonClick(job)}>Edit</Button>
+                                                        <Button size='sm' color="danger" onPress={() => handleDeleteJob(job.id)}>Delete</Button>
+                                                    </div>
                                                 </div>
                                                 <Divider />
                                             </div>

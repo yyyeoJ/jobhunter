@@ -32,7 +32,7 @@ const LoginPage = () => {
 
 
 return (
-    <div className='flex justify-center sm:mt-28'>
+    <div className='flex justify-center mt-56 lg:mt-28'>
             <Card className="w-[400px]">
                 <CardHeader className="flex gap-3">
                     <div className="flex flex-col w-full items-center justify-center">

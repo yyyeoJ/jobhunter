@@ -84,7 +84,7 @@ const RegisterPage = () => {
 
 
 return (
-    <div className='flex justify-center sm:mt-28 mb-5'>
+    <div className='flex justify-center mt-28 mb-5'>
     <Card className="w-[400px]">
         <CardHeader className="flex gap-3">
         <div className="flex flex-col w-full items-center justify-center">
