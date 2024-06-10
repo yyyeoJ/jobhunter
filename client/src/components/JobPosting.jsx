@@ -22,8 +22,11 @@ const JobPosting = () => {
     const [city,setCity] = useState("")
     const [homeOffice,setHomeOffice] = useState(false)
 
+
+    let jobData = {}
+
     if(user.user){
-        const jobData = {
+        jobData = {
             "company": user.user.user.fullname,
             "position": position,
             "description": description,
@@ -49,7 +52,7 @@ const JobPosting = () => {
 
 
         }catch(error){
-            setError(error.message)
+            console.error(error.message)
         }
     }
 

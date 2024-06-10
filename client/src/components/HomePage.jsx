@@ -166,7 +166,7 @@ const HomePage = () => {
                                 step={50000} 
                                 minValue={100000} 
                                 maxValue={2000000} 
-                                value={salaryFrom}
+                                value={100000}
                                 onChange={setSalaryFrom}
                                 
                                 formatOptions={{style: "currency", currency: "HUF",minimumFractionDigits:0,maximumFractionDigits:0}}
@@ -178,7 +178,7 @@ const HomePage = () => {
                                 step={50000} 
                                 minValue={100000} 
                                 maxValue={2000000} 
-                                value={salaryTo}
+                                value={100000}
                                 onChange={setSalaryTo}
                                 
                                 formatOptions={{style: "currency", currency: "HUF",minimumFractionDigits:0,maximumFractionDigits:0}}

@@ -4,7 +4,7 @@ import {
     Slider, Select, SelectItem, Textarea, Checkbox, Button, Card, CardHeader, CardBody, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, useDisclosure
 } from '@nextui-org/react';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useFetcher, useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const jobTypes = [
@@ -53,6 +53,7 @@ const Profile = () => {
         await fetchJobApplicants(jobId, accessToken);
         openApplicantsModal();
     };
+
 
     const navigate = useNavigate();
 
@@ -141,6 +142,18 @@ const Profile = () => {
     const handleJobTypeChange = (value) => {
         setSelectedJob((prev) => ({ ...prev, type: value }));
     };
+
+    const handleHomeOfficeChange = (checked) => {
+
+        let newValue = checked ? 1 : 0
+
+        setSelectedJob((prev) => ({ ...prev, homeOffice: newValue }));
+    };
+
+    if(selectedJob){
+
+        console.log(selectedJob.homeOffice)
+    }
 
     const handleJobInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -467,12 +480,13 @@ const Profile = () => {
                                         </div>
 
                                         <Checkbox
-                                            name="homeOffice"
-                                            isSelected={selectedJob.homeOffice}
-                                            size="sm"
-                                            onChange={(e) => handleJobInputChange({ target: e.target })}
+                                        name="homeOffice"
+                                        isSelected={selectedJob.homeOffice}
+                                        value = {selectedJob.homeOffice}
+                                        size="sm"
+                                        onChange={(e) => handleHomeOfficeChange(e.target.checked)}
                                         >
-                                            Home office
+                                        Home office
                                         </Checkbox>
                                     </>
                                 )}
