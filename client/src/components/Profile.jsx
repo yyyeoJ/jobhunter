@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const jobTypes = [
-        { key: "full-time", label: "Full time" },
-        { key: "part-time", label: "Part time" },
-        { key: "internship", label: "Internship" },
+        { key: "full-time", label: "full time" },
+        { key: "part-time", label: "part time" },
+        { key: "internship", label: "internship" },
     ];
 
     const userId = useSelector((state) => state.user.user.user.id);
@@ -26,6 +26,7 @@ const Profile = () => {
     const [selectedJob, setSelectedJob] = useState(null);
     const [applicants, setApplicants] = useState([]);
     const { isOpen: isApplicantsModalOpen, onOpen: openApplicantsModal, onOpenChange: onApplicantsModalOpenChange } = useDisclosure();
+
 
     const fetchJobApplicants = async (jobId, token) => {
         try {
@@ -137,6 +138,10 @@ const Profile = () => {
         openEditModal();
     };
 
+    const handleJobTypeChange = (value) => {
+        setSelectedJob((prev) => ({ ...prev, type: value }));
+    };
+
     const handleJobInputChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -191,8 +196,6 @@ const Profile = () => {
             city: selectedJob.city,
             homeOffice: selectedJob.homeOffice === 1,
         };
-
-        console.log(updatedData)
 
 
         try {
@@ -440,8 +443,8 @@ const Profile = () => {
                                             name="type"
                                             placeholder="Select a job type"
                                             className="w-[100%]"
-                                            selectedKeys={[selectedJob.type]}
-                                            onChange={(value) => handleJobInputChange({ target: { name: 'type', value } })}
+                                            selectedKeys={new Set([selectedJob.type])}
+                                            onSelectionChange={(e)=>{handleJobTypeChange(e.anchorKey)}}
                                         >
                                             {jobTypes.map((type) => (
                                                 <SelectItem key={type.key}>
@@ -538,10 +541,13 @@ const Profile = () => {
                             </ModalHeader>
                             <ModalBody>
                                 {applicants && applicants.map((applicant, index) => (
-                                    <div key={index} className='flex mb-2 items-center'>
-                                        <div className='flex-1'>{applicant.user.fullname}</div>
-                                        <div className='flex-1'>{applicant.user.email}</div>
-                                    </div>
+                                    <Card key={index} className='flex gap-5 flex-row bg-[#27272A]'>
+                                        <CardBody className='flex'>
+                                            <div className='flex-1'>{applicant.user.fullname}</div>
+                                            <div className='flex-1'>{applicant.user.email}</div>
+                                        </CardBody>
+                                    </Card>
+                                    
                                 ))}
                             </ModalBody>
                             <ModalFooter>

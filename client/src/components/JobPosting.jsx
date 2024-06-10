@@ -6,9 +6,9 @@ import axios from "axios"
 import {useNavigate} from "react-router-dom"
 
 const jobTypes = [
-    {key: "full-time", label: "Full time"},
-    {key: "part-time", label: "Part time"},
-    {key: "internship", label: "Internship"},
+    {key: "full-time", label: "full time"},
+    {key: "part-time", label: "part time"},
+    {key: "internship", label: "internship"},
 ];
 
 const JobPosting = () => {

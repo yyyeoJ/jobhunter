@@ -238,15 +238,6 @@ Az elkészült program beadása a Canvasen történik, és két dolgot kell ide 
 
 ## **Pontozás**
 
-
-- [ ] Álláshírdetés szerkesztése
-
-- [ ] Applicants kijelzése
-
--Reszponzív kártyák
-
-
-
 - [x] Ennek a README.md fájlnak a  kitöltése. (kötelező)
 - [x] React használata (kötelező)
 - [x] Redux használata (kötelező)

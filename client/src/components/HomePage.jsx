@@ -104,19 +104,37 @@ const HomePage = () => {
                                 <p>Job details | {selectedJob?.position}</p>
                             </ModalHeader>
                             <ModalBody>
-                                <Divider />
-                                <p>Company: {selectedJob?.company}</p>
-                                <Divider />
-                                <p>City: {selectedJob?.city}</p>
-                                <Divider />
-                                <p>Salary: {formatCurrency(selectedJob?.salaryFrom)} - {formatCurrency(selectedJob?.salaryTo)}</p>
-                                <Divider />
-                                <p>Job type: {selectedJob?.type}</p>
-                                <Divider />
-                                <p>Home office: {selectedJob?.homeOffice === 1 ? "Yes" : "No"}</p>
-                                <Divider />
+                                
+                                <div className='flex flex-row p-2 rounded-xl bg-[#27272A]'>
+                                    <p className='flex-1'>Company: </p>
+                                    <p className='flex-1'>{selectedJob?.company}</p>
+                                </div>
+
+                                <div className='flex flex-row p-2 rounded-xl bg-[#27272A]'>
+                                    <p className='flex-1'>City: </p>
+                                    <p className='flex-1'>{selectedJob?.city}</p>
+                                </div> 
+
+                                <div className='flex flex-row p-2 rounded-xl bg-[#27272A]'>
+                                    <p className='flex-1'>Salary: </p>
+                                    <p className='flex-1'>{formatCurrency(selectedJob?.salaryFrom)} - {formatCurrency(selectedJob?.salaryTo)}</p>
+                                </div>                                 
+
+                                <div className='flex flex-row p-2 rounded-xl bg-[#27272A]'>
+                                    <p className='flex-1'>Employment type: </p>
+                                    <p className='flex-1'>{selectedJob?.type}</p>
+                                </div>
+
+                                <div className='flex flex-row p-2 rounded-xl bg-[#27272A]'>
+                                    <p className='flex-1'>Home Office: </p>
+                                    <p className='flex-1'>{selectedJob?.homeOffice === 1 ? "Yes" : "No"}</p>
+                                </div>
+                        
                                 <p>Description:</p>
-                                <p>{selectedJob?.description}</p>
+                                <div className='flex flex-row h-[20rem] overflow-y-auto p-2 rounded-xl bg-[#27272A]'>
+                                    {selectedJob?.description}
+                                </div>
+
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>
