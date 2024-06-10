@@ -134,6 +134,25 @@ const Profile = () => {
         setSelectedExperience((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleExperienceIntervalFromChange = (e) => {
+        const newValue = e.target.value;
+        const [from, to] = selectedExperience.interval.split("-");
+        setSelectedExperience((prev) => ({
+            ...prev,
+            interval: `${newValue}-${to}`
+        }));
+    };
+    
+    const handleExperienceIntervalToChange = (e) => {
+        const newValue = e.target.value;
+        const [from, to] = selectedExperience.interval.split("-");
+        setSelectedExperience((prev) => ({
+            ...prev,
+            interval: `${from}-${newValue}`
+        }));
+    };
+
+
     const handleEditJobButtonClick = (job) => {
         setSelectedJob(job);
         openEditModal();
@@ -389,12 +408,22 @@ const Profile = () => {
                                 {userData && userData.role === "jobseeker" && (
                                     <>
                                         <Input
-                                            label="Interval"
-                                            name="interval"
-                                            value={selectedExperience?.interval || ''}
-                                            onChange={handleExperienceInputChange}
+                                            type='number'
+                                            label="From"
+                                            name="intervalFrom"
+                                            value={selectedExperience?.interval.split("-")[0] || ''}
+                                            onChange={handleExperienceIntervalFromChange}
                                             fullWidth
                                         />
+                                        <Input
+                                            type='number'
+                                            label="To"
+                                            name="intervalTo"
+                                            value={selectedExperience?.interval.split("-")[1] || ''}
+                                            onChange={handleExperienceIntervalToChange}
+                                            fullWidth
+                                        />
+
                                         <Input
                                             label="Company"
                                             name="company"
